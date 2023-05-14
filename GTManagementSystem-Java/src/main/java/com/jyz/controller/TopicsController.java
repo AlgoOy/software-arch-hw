@@ -111,5 +111,10 @@ public class TopicsController {
     }
 
 
+    @GetMapping("/getalltopic")
+    public Result getAllTopic(){
 
+        List<Topics> topicsList = topicsSrevice.list();
+        return Result.succ(topicsList);
+    }
 }

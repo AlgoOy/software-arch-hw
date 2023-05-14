@@ -114,9 +114,69 @@ public class StudentsController {
         }
         return Result.fail("已有此用户");
     }
+    //获取学生确认状态
 
+    @PostMapping("/studentready")
+    public Result studentready(@RequestParam("studentid") String studentid){
+        Map<String,Object> columnMap = new HashMap<>();
+        columnMap.put("studentid",studentid);
+        Students students =  studentsSrevice.getById(studentid);
+        students.setStatus(1);
+        studentsSrevice.updateById(students);
+        return Result.succ("信息确认成功", "");
 
+    }
+    //获取学生确认状态
+    @GetMapping("/getnotreadystudent")
+    public Result getnotreadystudent(){
+        List<Students> studentsList = studentsSrevice.list();
+        int k=0;
+        for(int i=0;i<studentsList.size();i++)
+            if(studentsList.get(i).getStatus()!=0)
+                studentsList.remove(i);
+        return Result.succ(studentsList);
+    }
 
+    @PostMapping("/getblindstudent")
+    public Result getblindstudent(@RequestParam("studentid") String studentid){
+        Map<String,Object> columnMap = new HashMap<>();
+        columnMap.put("studentid",studentid);
+        Students students =  studentsSrevice.getById(studentid);
+        students.setStatus(2);
+        studentsSrevice.updateById(students);
+        return Result.succ("盲审确认成功", "");
+
+    }
+    @PostMapping("/getdefensestudent")
+    public Result getdefensestudent(@RequestParam("studentid") String studentid){
+        Map<String,Object> columnMap = new HashMap<>();
+        columnMap.put("studentid",studentid);
+        Students students =  studentsSrevice.getById(studentid);
+        students.setStatus(3);
+        studentsSrevice.updateById(students);
+        return Result.succ("答辩确认成功", "");
+
+    }
+    //获取学生盲审成绩
+    @GetMapping("/getblindscore")
+    public Result getblindscore(){
+        List<Students> studentsList = studentsSrevice.list();
+        int k=0;
+        for(int i=0;i<studentsList.size();i++)
+            if(studentsList.get(i).getStatus()!=1)
+                studentsList.remove(i);
+        return Result.succ(studentsList);
+    }
+    //获取学生答辩成绩
+    @GetMapping("/getdefensescore")
+    public Result getdefensescore(){
+        List<Students> studentsList = studentsSrevice.list();
+        int k=0;
+        for(int i=0;i<studentsList.size();i++)
+            if(studentsList.get(i).getStatus()!=2)
+                studentsList.remove(i);
+        return Result.succ(studentsList);
+    }
 
 
 

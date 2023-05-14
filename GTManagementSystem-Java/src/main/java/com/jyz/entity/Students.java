@@ -36,6 +36,9 @@ public class Students implements Serializable {
     private String studenttelephone;
 
     private String teacherid;
+    private int status;
+    private int blindscore;
 
+    private int defensescore;
 
 }
