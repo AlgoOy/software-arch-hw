@@ -7,6 +7,11 @@ import TeachersManagement from "@/views/Admin/TeachersManagement";
 import AdminStudentsManagement from "@/views/Admin/StudentsManagement";
 import AddTeacher from "@/views/Admin/AddTeacher";
 import AddStudent from "@/views/Admin/AddStudent";
+// AlgoOy
+import Confirm from "@/views/Graduate/Confirm";
+import Blind from "@/views/Graduate/Blind";
+import Defense from "@/views/Graduate/Defense";
+// AlgoOy
 
 import TeacherInfo from "@/views/Teacher/TeacherInfo";
 import TeacherStudentsManagement from "@/views/Teacher/StudentsManagement";
@@ -93,6 +98,38 @@ const routes = [
                     keepAlive: true, // 需要被缓存
                 },
             },
+            // AlgoOy
+            {
+                path: '/graduate/confirm',
+                name: Confirm,
+                component: Confirm,
+                meta: {
+                    role: 'admin',
+                    title: '管理员用户',
+                    keepAlive: true, // 需要被缓存
+                },
+            },
+            {
+                path: '/graduate/blind',
+                name: Blind,
+                component: Blind,
+                meta: {
+                    role: 'admin',
+                    title: '管理员用户',
+                    keepAlive: true, // 需要被缓存
+                },
+            },
+            {
+                path: '/graduate/defense',
+                name: Defense,
+                component: Defense,
+                meta: {
+                    role: 'admin',
+                    title: '管理员用户',
+                    keepAlive: true, // 需要被缓存
+                },
+            },
+            // AlgoOy
         ]
     },
 
