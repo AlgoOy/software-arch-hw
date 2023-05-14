@@ -117,7 +117,8 @@ public class StudentsController {
     //获取学生确认状态
 
     @PostMapping("/studentready")
-    public Result studentready(@RequestParam("studentid") String studentid){
+    public Result studentready(@RequestBody Students studentid){
+        System.out.println(studentid);
         Map<String,Object> columnMap = new HashMap<>();
         columnMap.put("studentid",studentid);
         Students students =  studentsSrevice.getById(studentid);

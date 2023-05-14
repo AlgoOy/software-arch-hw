@@ -2,19 +2,20 @@
     <div>
         <el-descriptions title="学生信息"></el-descriptions>
         <div>
-            <el-table :data="info" style="width: 100%">
-                <el-table-column prop="username" label="姓名" width="200"></el-table-column>
-                <el-table-column prop="studentid" label="学号" width="200"></el-table-column>
-                <el-table-column prop="department" label="专业" width="200"></el-table-column>
-                <!-- <el-table-column prop="topictitle" label="课题名" width="300"></el-table-column> -->
+            <el-table :data="infos" style="width: 100%">
+                <el-table-column prop="username" label="姓名" width="120"></el-table-column>
+                <el-table-column prop="studentid" label="学号" width="120"></el-table-column>
+                <el-table-column prop="department" label="院系" width="120"></el-table-column>
+                <el-table-column prop="specialty" label="专业" width="120"></el-table-column>
+                <el-table-column prop="teacherid" label="指导老师" width="120"></el-table-column>
+                <el-table-column prop="topictitle" label="课题名" width="300"></el-table-column>
 
                 <el-table-column>
-                    <template slot-scope="info" >
-                        <el-button type="danger" size="mini" @click="deleteTopic(mytopic.row)">删除</el-button>
+                    <template slot-scope="infos" >
+                        <el-button type="danger" size="mini" @click="infoConfirm(infos.row)">确认</el-button>
                     </template>
                 </el-table-column>
             </el-table>
-            <div  v-show="this.status === 1" style="font-size: 13px; color: #ff0000; text-align: left">注意：审核未通过的课题需要删除后才能重新选择或自拟</div>
         </div>
     </div>
 
@@ -25,24 +26,20 @@
         name: "InfoConfirm",
         data() {
             return {
-                info:[],
-                control: 0,
-                status:0
+                infos:[],
             }
         },
         methods: {
-            getAllStudents(){
-                this.$axios.get("/students/getallstudents").then(res=>{
-                    this.info = res.data.data
+            getInfos(){
+                this.$axios.get("/admins/getallinfos").then(res=>{
+                    this.infos = res.data.data
+                    this.infos = this.infos.filter(info => info.status === 0)
                 })
             },
-            check(){
-                this.$axios.get(`/students/getallstudent?userid=${this.$store.state.userid}`).then(res=>{
-                    if (res.data.data.teacherid === ''){
-                        this.control = 0
-                    }else {
-                        this.getMyTopic()
-                    }
+            infoConfirm(info) {
+                this.$axios.post('/students/studentready', {studentid: info.studentid}).then(res => {
+                    this.getInfos()
+                    this.$message.success(res.data.msg)
                 })
             },
             deleteTopic(topic) {
@@ -53,7 +50,7 @@
             },
         },
         created() {
-            this.getAllStudents()
+            this.getInfos()
         }
     }
 </script>
