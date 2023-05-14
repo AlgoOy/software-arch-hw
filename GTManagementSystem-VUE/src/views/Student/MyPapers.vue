@@ -7,26 +7,29 @@
 
         <div v-show="control === 1">
             <el-descriptions title="我的论文">
-                <el-button style="margin-right: 50px" type="primary" slot="extra" @click="dialogUploadVisible = true">
+                <el-button style="margin-right: 50px" type="primary" slot="extra" v-show="uploadVisible === true" @click="dialogUploadVisible = true">
                     上传论文
                 </el-button>
             </el-descriptions>
-            <el-table :data="mypapers" style="width: 100%" border>
-                <el-table-column type="index" label="序号" width="200"></el-table-column>
-                <el-table-column prop="filename" label="名称" width="300"></el-table-column>
+            <el-table :data="commonInfo" style="width: 100%" border>
+                <!-- <el-table-column type="index" label="序号" width="200"></el-table-column> -->
+                <el-table-column prop="filename" label="名称" width="150"></el-table-column>
                 <el-table-column label="上传时间" width="300">
                     <template slot-scope="paper">
                         {{dateFormat(paper.row.date)}}
                     </template>
                 </el-table-column>
-                <el-table-column label="教师评价" width="300">
+                <el-table-column label="教师评价" width="150">
                     <template slot-scope="paper">
                         {{(paper.row.teachermsg === null) ? "未阅评":paper.row.teachermsg }}
                     </template>
                 </el-table-column>
+                <el-table-column prop="status" label="学位申请状态" width="150"></el-table-column>
+                <el-table-column prop="blindscore" label="盲审成绩" width="100"></el-table-column>
+                <el-table-column prop="defensescore" label="答辩成绩" width="100"></el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="paper">
-                        <el-button type="danger" size="mini" @click="deletePaper(paper.row)">删除</el-button>
+                        <el-button type="danger" size="mini" v-show="deleteVisible === true" @click="deletePaper(paper.row)">删除</el-button>
                         <el-button type="success" size="mini" @click="downloadPaper(paper.row)">下载</el-button>
                     </template>
                 </el-table-column>
@@ -59,9 +62,13 @@
         name: "MyPapers",
         data() {
             return {
+                commonInfo: [],
+                studentInfo: [],
                 control: 0,
                 mypapers: [],
                 dialogUploadVisible: false,
+                uploadVisible: true,
+                deleteVisible: true,
                 userinfo: {
                     studentid: this.$store.state.userid,
                     teacherid: this.$store.state.teacherid
@@ -74,13 +81,62 @@
                 this.$axios.get(`/papers/getmypapers?studentid=${this.$store.state.userid}`).then(res => {
                     if (res.data.data !== null) {
                         this.mypapers = res.data.data
+                        console.log(this.mypapers)
+                        if (this.mypapers.length === 0) {
+                            this.uploadVisible = true
+                        } else {
+                            this.uploadVisible = false
+                            this.judgeDelete()
+                        }
+                        this.$axios.get(`/students/getstudent?userid=${this.$store.state.userid}`).then(res=>{
+                            this.studentInfo = res.data.data
+                            if (this.studentInfo.status === 0) {
+                                this.studentInfo.status = '信息确认'
+                            } else if (this.studentInfo.status === 1) {
+                                this.studentInfo.status = '盲审中'
+                            } else if (this.studentInfo.status === 2){
+                                this.studentInfo.status = '答辩中'
+                            } else {
+                                this.studentInfo.status = '已毕业'
+                            }
+                            this.commonInfo.push({
+                                filename: this.mypapers[0].filename, 
+                                date: this.mypapers[0].date, 
+                                teachermsg: this.mypapers[0].teachermsg,
+                                paperid: this.mypapers[0].paperid,
+                                status: this.studentInfo.status,
+                                blindscore: this.studentInfo.blindscore,
+                                defensescore: this.studentInfo.defensescore,
+                            })
+                        })
+                    }
+                })
+            },
+            judgeDelete() {
+                this.$axios.get(`/students/getstudent?userid=${this.$store.state.userid}`).then(res=>{
+                    this.studentInfo = res.data.data
+                    if(this.studentInfo.status === 0) {
+                        this.deleteVisible = true
+                    } else {
+                        this.deleteVisible = false
                     }
                 })
             },
             deletePaper(paper) {
-                this.$axios.post('/papers/deletepaper', paper).then(res => {
-                    this.mypapers = [];
-                    this.getMyPapers();
+                this.$axios.get(`/students/getstudent?userid=${this.$store.state.userid}`).then(res=>{
+                    this.studentInfo = res.data.data
+                    if(this.studentInfo.status !== 0) {
+                        this.$message({message:'您已通过信息确认，无法删除', type:'error'})
+                        this.mypapers = [];
+                        this.commonInfo = [];
+                        this.getMyPapers();
+                    } else {
+                        this.$axios.post('/papers/deletepaper', JSON.stringify(this.mypapers[0])).then(res => {
+                            this.mypapers = [];
+                            this.commonInfo = [];
+                            this.getMyPapers();
+                        })
+                    }
                 })
             },
             beforeUpload(file){

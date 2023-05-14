@@ -34,6 +34,7 @@
                 this.$axios.get("/admins/getallinfos").then(res=>{
                     this.infos = res.data.data
                     this.infos = this.infos.filter(info => info.status === 0)
+                    this.infos = this.infos.filter(info => info.topictitle !== null)
                 })
             },
             infoConfirm(info) {
@@ -41,13 +42,7 @@
                     this.getInfos()
                     this.$message.success(res.data.msg)
                 })
-            },
-            deleteTopic(topic) {
-                this.$axios.post('/topics/deletetopic', {topictitle: topic.topictitle}).then(res => {
-                    this.getMyTopic()
-                    this.$message.success(res.data.msg)
-                })
-            },
+            }
         },
         created() {
             this.getInfos()
