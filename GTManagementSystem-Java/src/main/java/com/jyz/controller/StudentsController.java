@@ -139,7 +139,7 @@ public class StudentsController {
     }
 
     @PostMapping("/getblindstudent")
-    public Result getblindstudent(@RequestParam("studentid") String studentid){
+    public Result getblindstudent(@RequestBody Students studentid){
         Map<String,Object> columnMap = new HashMap<>();
         columnMap.put("studentid",studentid);
         Students students =  studentsSrevice.getById(studentid);
@@ -149,7 +149,7 @@ public class StudentsController {
 
     }
     @PostMapping("/getdefensestudent")
-    public Result getdefensestudent(@RequestParam("studentid") String studentid){
+    public Result getdefensestudent(@RequestBody Students studentid){
         Map<String,Object> columnMap = new HashMap<>();
         columnMap.put("studentid",studentid);
         Students students =  studentsSrevice.getById(studentid);
