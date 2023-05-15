@@ -181,12 +181,19 @@ public class StudentsController {
         return Result.succ(studentsList);
     }
 
+
+
     @PostMapping("/blindready")
-    public Result blindready(@RequestBody String topictitle,int blindscore){
+    public Result blindready(@RequestBody Map<String,String> map){
 
                    List<Topics> topicsList =topicsSrevice.list();
                    List<Students> studentsList=studentsSrevice.list();
                    String studentid="";
+                   String topictitle = map.get("topictitle");
+                     String Blindscore = map.get("blindscore");
+                    System.out.println(topictitle);
+                    System.out.println(Blindscore);
+                   int  blindscore=Integer.parseInt(Blindscore);
 
                    for(int i=0;i<topicsList.size();i++)
                        if(topicsList.get(i).getTopictitle().equals(topictitle))
@@ -195,6 +202,7 @@ public class StudentsController {
                        if(studentsList.get(i).getStudentid().equals(studentid))
                        {
                            studentsList.get(i).setBlindscore(blindscore);
+                           studentsList.get(i).setStatus(2);
                            studentsSrevice.updateById(studentsList.get(i));
                        }
 
