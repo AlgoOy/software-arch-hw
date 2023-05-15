@@ -76,6 +76,7 @@ public class AdminsController {
                     allinfos.setFileurl(papersList.get(k).getFileurl());
                     allinfos.setFilename(papersList.get(k).getFilename());
                     allinfos.setPaperid(papersList.get(k).getPaperid());
+                    allinfos.setTopicdepict(topicsList.get(j).getTopicdepict());
 
                 }
             }

@@ -12,6 +12,15 @@ public class Allinfos {
 
     private String specialty;
 
+    private String topicdepict;
+
+    public void setTopicdepict(String topicdepict) {
+        this.topicdepict = topicdepict;
+    }
+
+    public String getTopicdepict() {
+        return topicdepict;
+    }
 
     private int blindscore;
 
