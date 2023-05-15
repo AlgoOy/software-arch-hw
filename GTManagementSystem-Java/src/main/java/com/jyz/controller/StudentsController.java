@@ -210,15 +210,25 @@ public class StudentsController {
         return  Result.succ("添加成功","");
     }
     @PostMapping("/defenseready")
-    public Result defenseready(@RequestBody String studentid,int defensescore){
+    public Result defenseready(@RequestBody Map<String,String> map){
+
 
 
         List<Students> studentsList=studentsSrevice.list();
+
+        String studentid = map.get("studentid");
+        String Defensescore = map.get("defensescore");
+        System.out.println(studentid);
+        System.out.println(Defensescore);
+        int  defensescore=Integer.parseInt(Defensescore);
+
+
 
         for(int i=0;i<studentsList.size();i++)
             if(studentsList.get(i).getStudentid().equals(studentid))
             {
                 studentsList.get(i).setDefensescore(defensescore);
+                studentsList.get(i).setStatus(3);
                 studentsSrevice.updateById(studentsList.get(i));
             }
 
