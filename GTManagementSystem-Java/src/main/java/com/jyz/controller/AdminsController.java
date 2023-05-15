@@ -28,8 +28,11 @@ public class AdminsController {
 
     @Autowired
     AdminsSrevice adminsSrevice;
+    @Autowired
     StudentsSrevice studentsSrevice;
+    @Autowired
     TopicsSrevice  topicsSrevice;
+    @Autowired
     PapersSrevice papersSrevice;
     @GetMapping("/getadmin")
     public Result getAdmin(@RequestParam String userid){
@@ -51,9 +54,9 @@ public class AdminsController {
         List<Topics> topicsList = topicsSrevice.list();
         List<Papers> papersList= papersSrevice.list();
         List<Allinfos> allinfoslist= new ArrayList<Allinfos>();
-        Allinfos allinfos=new Allinfos();
         for(int i=0;i<studentsList.size();i++)
         {    String studentId=studentsList.get(i).getStudentid();
+            Allinfos allinfos=new Allinfos();
             for(int j=0;j<topicsList.size();j++)
             {
                 if(studentId.equals(topicsList.get(j).getStudentid()))
