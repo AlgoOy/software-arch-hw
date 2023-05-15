@@ -4,7 +4,9 @@ package com.jyz.controller;
 import com.jyz.comm.lang.Result;
 import com.jyz.entity.Students;
 import com.jyz.entity.Teachers;
+import com.jyz.entity.Topics;
 import com.jyz.service.StudentsSrevice;
+import com.jyz.service.TopicsSrevice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +28,8 @@ public class StudentsController {
 
     @Autowired
     StudentsSrevice studentsSrevice;
-
+    @Autowired
+    TopicsSrevice topicsSrevice;
 //    学生用户获取自己的个人信息
     @GetMapping("/getstudent")
     public Result getStudent(@RequestParam String userid){
@@ -117,8 +120,7 @@ public class StudentsController {
     //获取学生确认状态
 
     @PostMapping("/studentready")
-    public Result studentready(@RequestBody Students studentid){
-        System.out.println(studentid);
+    public Result studentready(@RequestParam("studentid") String studentid){
         Map<String,Object> columnMap = new HashMap<>();
         columnMap.put("studentid",studentid);
         Students students =  studentsSrevice.getById(studentid);
@@ -139,7 +141,7 @@ public class StudentsController {
     }
 
     @PostMapping("/getblindstudent")
-    public Result getblindstudent(@RequestBody Students studentid){
+    public Result getblindstudent(@RequestParam("studentid") String studentid){
         Map<String,Object> columnMap = new HashMap<>();
         columnMap.put("studentid",studentid);
         Students students =  studentsSrevice.getById(studentid);
@@ -149,7 +151,7 @@ public class StudentsController {
 
     }
     @PostMapping("/getdefensestudent")
-    public Result getdefensestudent(@RequestBody Students studentid){
+    public Result getdefensestudent(@RequestParam("studentid") String studentid){
         Map<String,Object> columnMap = new HashMap<>();
         columnMap.put("studentid",studentid);
         Students students =  studentsSrevice.getById(studentid);
@@ -179,6 +181,40 @@ public class StudentsController {
         return Result.succ(studentsList);
     }
 
+    @PostMapping("/blindready")
+    public Result blindready(@RequestBody String topictitle,int blindscore){
+
+                   List<Topics> topicsList =topicsSrevice.list();
+                   List<Students> studentsList=studentsSrevice.list();
+                   String studentid="";
+
+                   for(int i=0;i<topicsList.size();i++)
+                       if(topicsList.get(i).getTopictitle().equals(topictitle))
+                           studentid=topicsList.get(i).getStudentid();
+                   for(int i=0;i<studentsList.size();i++)
+                       if(studentsList.get(i).getStudentid().equals(studentid))
+                       {
+                           studentsList.get(i).setBlindscore(blindscore);
+                           studentsSrevice.updateById(studentsList.get(i));
+                       }
 
 
+        return  Result.succ("添加成功","");
+    }
+    @PostMapping("/defenseready")
+    public Result defenseready(@RequestBody String studentid,int defensescore){
+
+
+        List<Students> studentsList=studentsSrevice.list();
+
+        for(int i=0;i<studentsList.size();i++)
+            if(studentsList.get(i).getStudentid().equals(studentid))
+            {
+                studentsList.get(i).setDefensescore(defensescore);
+                studentsSrevice.updateById(studentsList.get(i));
+            }
+
+
+        return  Result.succ("添加成功","");
+    }
 }

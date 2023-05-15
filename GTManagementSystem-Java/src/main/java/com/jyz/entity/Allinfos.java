@@ -1,5 +1,6 @@
 package com.jyz.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 
 public class Allinfos {
@@ -24,7 +25,9 @@ public class Allinfos {
 
 
     private String fileurl;
-
+    @TableId(value = "paperid", type = IdType.AUTO)
+    private Integer paperid;
+    private String filename;
     public String getStudentid() {
         return studentid;
     }
@@ -103,6 +106,22 @@ public class Allinfos {
 
     public void setFileurl(String fileurl) {
         this.fileurl = fileurl;
+    }
+
+    public Integer getPaperid() {
+        return paperid;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setPaperid(Integer paperid) {
+        this.paperid = paperid;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 }
 

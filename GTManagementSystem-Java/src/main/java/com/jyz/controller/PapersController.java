@@ -3,6 +3,7 @@ package com.jyz.controller;
 
 import com.jyz.comm.lang.Result;
 import com.jyz.entity.Papers;
+import com.jyz.entity.Students;
 import com.jyz.service.PapersSrevice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -141,6 +142,15 @@ public class PapersController {
         file.delete();
         papersSrevice.removeById(papers);
         return Result.succ("");
+    }
+    @GetMapping("/getpaperbytitle")
+    public Result getpaperbytitle(@RequestParam String title){
+        List<Papers> papersList = papersSrevice.list();
+          for(int i=0;i<papersList.size();i++)
+              if(papersList.get(i).getFilename().equals(title))
+                  return Result.succ(papersList.get(i));
+
+                  return Result.succ("获取失败");
     }
 
 }
